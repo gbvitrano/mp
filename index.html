@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/Perimetroareapianificata_2.js"></script>
+        <script src="data/Sentieri_3.js"></script>
+        <script src="data/Viabilit_4.js"></script>
+        <script src="data/Particellechepotrebberoessereinteressatedalprogetto_5.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:18, minZoom:13
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix(' <a href="https://twitter.com/gbvitrano" title="@gbvitrano" target="_blank">@gbvitrano</a> &middot; <a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+            map.setMaxBounds(map.getBounds());
+        }
+        map.createPane('pane_GoogleSatellite_0');
+        map.getPane('pane_GoogleSatellite_0').style.zIndex = 400;
+        var layer_GoogleSatellite_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleSatellite_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.google.at/permissions/geoguidelines/attr-guide.html">Map data ©2015 Google</a>',
+            minZoom: 13,
+            maxZoom: 18,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_GoogleSatellite_0;
+        map.addLayer(layer_GoogleSatellite_0);
+        map.createPane('pane_OpenStreetMapmonochrome_1');
+        map.getPane('pane_OpenStreetMapmonochrome_1').style.zIndex = 401;
+        var layer_OpenStreetMapmonochrome_1 = L.tileLayer('http://a.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
+            pane: 'pane_OpenStreetMapmonochrome_1',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 13,
+            maxZoom: 18,
+            minNativeZoom: 0,
+            maxNativeZoom: 18
+        });
+        layer_OpenStreetMapmonochrome_1;
+        map.addLayer(layer_OpenStreetMapmonochrome_1);
+        function pop_Perimetroareapianificata_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Perimetroareapianificata_2_0() {
+            return {
+                pane: 'pane_Perimetroareapianificata_2',
+                opacity: 1,
+                color: 'rgba(255,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 5.0, 
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Perimetroareapianificata_2');
+        map.getPane('pane_Perimetroareapianificata_2').style.zIndex = 402;
+        map.getPane('pane_Perimetroareapianificata_2').style['mix-blend-mode'] = 'normal';
+        var layer_Perimetroareapianificata_2 = new L.geoJson(json_Perimetroareapianificata_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Perimetroareapianificata_2',
+            layerName: 'layer_Perimetroareapianificata_2',
+            pane: 'pane_Perimetroareapianificata_2',
+            onEachFeature: pop_Perimetroareapianificata_2,
+            style: style_Perimetroareapianificata_2_0,
+        });
+        bounds_group.addLayer(layer_Perimetroareapianificata_2);
+        map.addLayer(layer_Perimetroareapianificata_2);
+        function pop_Sentieri_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Sentieri_3_0() {
+            return {
+                pane: 'pane_Sentieri_3',
+                opacity: 1,
+                color: 'rgba(72,123,182,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 3.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Sentieri_3');
+        map.getPane('pane_Sentieri_3').style.zIndex = 403;
+        map.getPane('pane_Sentieri_3').style['mix-blend-mode'] = 'normal';
+        var layer_Sentieri_3 = new L.geoJson(json_Sentieri_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Sentieri_3',
+            layerName: 'layer_Sentieri_3',
+            pane: 'pane_Sentieri_3',
+            onEachFeature: pop_Sentieri_3,
+            style: style_Sentieri_3_0,
+        });
+        bounds_group.addLayer(layer_Sentieri_3);
+        map.addLayer(layer_Sentieri_3);
+        function pop_Viabilit_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Viabilit_4_0() {
+            return {
+                pane: 'pane_Viabilit_4',
+                opacity: 1,
+                color: 'rgba(172,172,172,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(172,172,172,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Viabilit_4');
+        map.getPane('pane_Viabilit_4').style.zIndex = 404;
+        map.getPane('pane_Viabilit_4').style['mix-blend-mode'] = 'normal';
+        var layer_Viabilit_4 = new L.geoJson(json_Viabilit_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Viabilit_4',
+            layerName: 'layer_Viabilit_4',
+            pane: 'pane_Viabilit_4',
+            onEachFeature: pop_Viabilit_4,
+            style: style_Viabilit_4_0,
+        });
+        bounds_group.addLayer(layer_Viabilit_4);
+        map.addLayer(layer_Viabilit_4);
+        function pop_Particellechepotrebberoessereinteressatedalprogetto_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+        }
+
+        function style_Particellechepotrebberoessereinteressatedalprogetto_5_0(feature) {
+            switch(String(feature.properties['progrtto'])) {
+                case 'altri':
+                    return {
+                pane: 'pane_Particellechepotrebberoessereinteressatedalprogetto_5',
+                opacity: 1,
+                color: 'rgba(255,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(226,228,75,0.5)',
+                interactive: true,
+            }
+                    break;
+                case 'studio':
+                    return {
+                pane: 'pane_Particellechepotrebberoessereinteressatedalprogetto_5',
+                opacity: 1,
+                color: 'rgba(255,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(232,4,50,0.5)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_Particellechepotrebberoessereinteressatedalprogetto_5',
+                opacity: 1,
+                color: 'rgba(255,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Particellechepotrebberoessereinteressatedalprogetto_5');
+        map.getPane('pane_Particellechepotrebberoessereinteressatedalprogetto_5').style.zIndex = 405;
+        map.getPane('pane_Particellechepotrebberoessereinteressatedalprogetto_5').style['mix-blend-mode'] = 'normal';
+        var layer_Particellechepotrebberoessereinteressatedalprogetto_5 = new L.geoJson(json_Particellechepotrebberoessereinteressatedalprogetto_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Particellechepotrebberoessereinteressatedalprogetto_5',
+            layerName: 'layer_Particellechepotrebberoessereinteressatedalprogetto_5',
+            pane: 'pane_Particellechepotrebberoessereinteressatedalprogetto_5',
+            onEachFeature: pop_Particellechepotrebberoessereinteressatedalprogetto_5,
+            style: style_Particellechepotrebberoessereinteressatedalprogetto_5_0,
+        });
+        bounds_group.addLayer(layer_Particellechepotrebberoessereinteressatedalprogetto_5);
+        map.addLayer(layer_Particellechepotrebberoessereinteressatedalprogetto_5);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'Particelle che potrebbero essere interessate dal progetto<br /><table><tr><td style="text-align: center;"><img src="legend/Particellechepotrebberoessereinteressatedalprogetto_5_altri0.png" /></td><td>altri</td></tr><tr><td style="text-align: center;"><img src="legend/Particellechepotrebberoessereinteressatedalprogetto_5_studio1.png" /></td><td>studio</td></tr><tr><td style="text-align: center;"><img src="legend/Particellechepotrebberoessereinteressatedalprogetto_5_2.png" /></td><td></td></tr></table>': layer_Particellechepotrebberoessereinteressatedalprogetto_5,'<img src="legend/Viabilit_4.png" /> Viabilità': layer_Viabilit_4,'<img src="legend/Sentieri_3.png" /> Sentieri': layer_Sentieri_3,'<img src="legend/Perimetroareapianificata_2.png" /> Perimetro area pianificata': layer_Perimetroareapianificata_2,"OpenStreetMap monochrome": layer_OpenStreetMapmonochrome_1,"Google Satellite": layer_GoogleSatellite_0,}).addTo(map) ;
+        setBounds();
+        var i = 0;
+        layer_Particellechepotrebberoessereinteressatedalprogetto_5.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['sottoparti'] !== null?String('<div style="color: #000000; font-size: 10pt; font-family: \'MS Shell Dlg 2\', sans-serif;">' + layer.feature.properties['sottoparti']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Particellechepotrebberoessereinteressatedalprogetto_5'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"progrtto": "str"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+        var i = 0;
+        layer_Particellechepotrebberoessereinteressatedalprogetto_5.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['sottoparti'] !== null?String('<div style="color: #000000; font-size: 10pt; font-family: \'MS Shell Dlg 2\', sans-serif;">' + layer.feature.properties['sottoparti']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Particellechepotrebberoessereinteressatedalprogetto_5'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_progrtto = document.createElement('div');
+            div_progrtto.id = "div_progrtto";
+            div_progrtto.className= "filterselect";
+            document.getElementById("menu").appendChild(div_progrtto);
+            sel_progrtto = document.createElement('select');
+            sel_progrtto.multiple = true;
+            sel_progrtto.size = 3;
+            sel_progrtto.id = "sel_progrtto";
+            var progrtto_options_str = "<option value='' unselected></option>";
+            sel_progrtto.onchange = function(){filterFunc()};
+            progrtto_options_str  += '<option value="NULL">Vuote</option>';
+            progrtto_options_str  += '<option value="altri">Particelle interessate da altri progetti</option>';
+            progrtto_options_str  += '<option value="studio">Particelle che potrebbero essere interessate dal progetto</option>';
+            sel_progrtto.innerHTML = progrtto_options_str;
+            div_progrtto.appendChild(sel_progrtto);
+            var lab_progrtto = document.createElement('div');
+            lab_progrtto.innerHTML = 'progrtto';
+            lab_progrtto.className = 'filterlabel';
+            div_progrtto.appendChild(lab_progrtto);
+            var reset_progrtto = document.createElement('div');
+            reset_progrtto.innerHTML = 'elimina il filtro';
+            reset_progrtto.className = 'filterlabel';
+            reset_progrtto.onclick = function() {
+                var options = document.getElementById("sel_progrtto").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_progrtto.appendChild(reset_progrtto);
+        resetLabels([layer_Particellechepotrebberoessereinteressatedalprogetto_5]);
+        map.on("zoomend", function(){
+            resetLabels([layer_Particellechepotrebberoessereinteressatedalprogetto_5]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_Particellechepotrebberoessereinteressatedalprogetto_5]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_Particellechepotrebberoessereinteressatedalprogetto_5]);
+        });
+        </script>
+    </body>
+</html>
