@@ -9,6 +9,7 @@
 <script src="./threejs/OrbitControls.js"></script>
 <script src="./threejs/ViewHelper.js"></script>
 <script src="./threejs/OutlineEffect.js"></script>
+<script src="./proj4js/proj4.js"></script>
 <script src="./Qgis2threejs.js"></script>
 </head>
 <body>
@@ -91,6 +92,8 @@
 
 <script>
 Q3D.Config.allVisible = true;
+Q3D.Config.autoZShift = true;
+Q3D.Config.coord.latlon = true;
 Q3D.Config.localMode = true;
 if (typeof proj4 === "undefined") document.getElementById("lib_proj4js").style.display = "none";
 
