@@ -2,14 +2,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>monte_pellegrino_gb - nodem</title>
+<title>dtm_dsm</title>
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 <link rel="stylesheet" type="text/css" href="./Qgis2threejs.css">
 <script src="./threejs/three.min.js"></script>
 <script src="./threejs/OrbitControls.js"></script>
 <script src="./threejs/ViewHelper.js"></script>
-<script src="./threejs/OutlineEffect.js"></script>
-<script src="./proj4js/proj4.js"></script>
 <script src="./Qgis2threejs.js"></script>
 </head>
 <body>
@@ -92,8 +90,6 @@
 
 <script>
 Q3D.Config.allVisible = true;
-Q3D.Config.autoZShift = true;
-Q3D.Config.coord.latlon = true;
 Q3D.Config.localMode = true;
 if (typeof proj4 === "undefined") document.getElementById("lib_proj4js").style.display = "none";
 
